@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<title>Map Visualization</title>
+		
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+		<!--[if lte IE 8]>
+			<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
+		<![endif]-->
+		
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" />
+		
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" />
+		
+		<link rel="stylesheet" href="leaflet.awesome-markers/leaflet.awesome-markers.css">
+		
+		<style type="text/css">
+			/* For the Leaflet map to have a percentage height (instead of a fixed height), the
+			 * <html> and <body> elements must have their heights set to 100%. For more info, see:
+			 * http://stackoverflow.com/questions/16543446/how-to-make-leaflet-map-height-variable
+			 */
+			html, body {
+				height: 100%;
+			}
+			#leafletMap {
+				height: 70%; /* You can change this to whatever you like. */
+			}
+		</style>
+	</head>
+	
+	<body>
+		
+		<div id="leafletMap"></div>
+		
+		<!-- This table uses Twitter Bootstrap CSS classes: http://twitter.github.io/bootstrap/base-css.html#tables -->
+		<table id="statsTable" class="table table-bordered table-hover table-condensed">
+			
+			<thead>
+				<tr>
+					<th>Data Type</th>
+					<th>North America</th>
+					<th>South America</th>
+					<th>Europe</th>
+					<th>Africa</th>
+					<th>Asia</th>
+					<th>Oceania</th>
+					<th>Total</th>
+				</tr>
+			</thead>
+			
+			<tbody>
+				<tr id="forumPost">
+					<td>Forum Posts</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+				<tr id="userLogin">
+					<td>User Logins</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+				<tr id="challengeRegistration">
+					<td>Challenge Registrations</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+				<tr id="challengeSubmission">
+					<td>Challenge Submissions</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+			</tbody>
+			
+			<tfoot>
+				<tr id="continentTotals">
+					<td>Total</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+			</tfoot>
+			
+		</table>
+		
+		<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+		
+		<script src="leaflet.awesome-markers/leaflet.awesome-markers.js"></script>
+		
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script src="map-visualization.js"></script>
+
+        <!-- uncomment to run this html app without a web server -->
+		<!-- <script src="test.js"></script> -->
+
+	</body>
+</html>

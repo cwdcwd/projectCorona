@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Corona - Cloudspokes Activity Visualizer</title>
+        <link rel="stylesheet" href="css/bootstrap.min.css"media="screen">
+        <link rel="stylesheet" href="css/slider.css"media="screen">
+        <link rel="stylesheet" href="css/app.css"media="screen">
+
+        <script src="js/raphael.js"></script>
+        <script src="js/world.js"></script>
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap-slider.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/app.js"></script>
+    </head>
+
+    <body>
+        <div id="world-map-container"></div>
+        <div class="slider-container">
+            <div id="time-slider" style="width: 1000px"></div>
+            <div class="slider-label">
+                <span class="start"> Start </span>
+                <span class="end"> Now </span>
+            </div>
+        </div>
+        <br/>
+
+        <div class="footer">
+            <span class="about">
+                Realtime Activities of Cloudspokes
+            </span>
+            <span class="pull-right creator">by aproxacs</span>
+        </div>
+    </body>
+</html>
