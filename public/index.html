@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Corona - Cloudspokes Activity Visualizer</title>
+        <link rel="stylesheet" href="css/slider.css"media="screen">
+        <link rel="stylesheet" href="css/app.css"media="screen">
+
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+        <script src="js/bootstrap-slider.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/app.js"></script>
+    </head>
+
+    <body>
+        <div id="world-map-container"></div>
+        <div class="slider-container">
+            <div class="slider-inner">
+                <div id="time-slider" style="width: 1000px"></div>
+                <div class="slider-label">
+                    <span class="start"> Start </span>
+                    <span class="end"> Now </span>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="stat-holder">
+
+                <table>
+                    <thead>
+                    <tr>
+                        <td>Event</td>
+                        <td>North America</td>
+                        <td>South America</td>
+                        <td>Europe</td>
+                        <td>Africa</td>
+                        <td>Asia</td>
+                        <td>Oceania</td>
+                        <td>Total</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><label><input id="forumPost" type="checkbox" checked> Forum Posts <img src="" width="16" height="16"></label></td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><label><input id="userLogin" type="checkbox" checked> User Logins <img src="" width="16" height="16"></label></td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><label><input id="challengeCreation" type="checkbox" checked> New Challenges <img src="" width="16" height="16"></label></td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><label><input id="challengeRegistration" type="checkbox" checked> Challenge Registrations <img src="" width="16" height="16"></label></td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><label><input id="challengeSubmission" type="checkbox" checked> Challenge Submissions <img src="" width="16" height="16"></label></td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><label><input id="scorecardSubmission" type="checkbox" checked> Scorecard Submissions <img src="" width="16" height="16"></label></td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><label><input id="total" type="checkbox" checked> Total</label></td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+        </div>
+    </body>
+</html>
