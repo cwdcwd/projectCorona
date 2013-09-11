@@ -57,6 +57,7 @@ org.authenticate({username: process.env.CDF_USERNAME, password: process.env.CDF_
     }
 });
 
+/*
 // home
 app.get('/', function(request, response) {
     response.send('<h1>Launch demo</h1>'
@@ -65,7 +66,7 @@ app.get('/', function(request, response) {
         + '<a href="/UI-02/map-visualization.html">UI-02</a>');
     //response.send('CALLBACK_URL: ' + config.CALLBACK_URL);
     //response.send('CALLBACK_URL: ' + config.CALLBACK_URL);
-});
+}); */
 
 // run app
 var port = process.env.PORT || 5000;
