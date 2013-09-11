@@ -99,7 +99,13 @@ body {
 }
 
 #stat-holder table td{
+    font-family: Helvetica;
     padding: 1px 7px 2px;
 }
 
+#stat-holder table td label, #stat-holder table thead td
+{
+    font-weight: bold;
+    color: #696969;
+}
 
