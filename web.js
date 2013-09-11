@@ -78,6 +78,12 @@ var server = app.listen(port, function() {
 // attach socket.io and listen
 var io = require('socket.io').listen(server);
 // get a reference to the socket once a client connects
+io.configure(function () { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 5);
+io.set("log level", 3);
+});
+
 var socket = io.sockets.on('connection', function (socket) { 
     console.log('new client connected');
     var preload=function(events){
