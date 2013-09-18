@@ -1,6 +1,5 @@
 # app config
-config.js
-.env
+process.env
 
 # OS generated files #
 ######################
