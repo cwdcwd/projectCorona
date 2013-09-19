@@ -1,5 +1,5 @@
 # app config
-process.env
+*.env
 
 # OS generated files #
 ######################

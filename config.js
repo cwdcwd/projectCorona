@@ -1,11 +1,11 @@
 exports.PORT = process.env.PORT || 5000; // use heroku's dynamic port or 5000 if localhost
 exports.HOST=process.env.HOST || 'localhost';
 exports.DEBUG = true;
-exports.ENVIRONMENT = (process.env.state==='production')?'production':'sandbox';
-exports.CALLBACK_URL = this.HOST+'-:' + this.PORT + '/oauth/callback';
+exports.ENVIRONMENT = (process.env.STATE==='production')?'production':'sandbox';
+exports.CALLBACK_URL = this.HOST+':' + this.PORT + '/oauth/callback';
 exports.PUSH_TOPIC = 'CDFActivityUpdates';
 
-exports.CLIENT_ID = process.env.CLIENT_SECRET;
+exports.CLIENT_ID = process.env.CLIENT_ID;
 exports.CLIENT_SECRET = process.env.CLIENT_SECRET;
 exports.API_VERSION = 'v27.0';
 

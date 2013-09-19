@@ -14,6 +14,7 @@ var fs = require("fs");
 var app = express();
 app.use(express.logger());
 app.use(express.static(__dirname + '/public'));
+console.log("Firing up!");
 
 // create connection to salesforce
 var org = nforce.createConnection({
