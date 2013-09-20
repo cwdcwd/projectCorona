@@ -234,7 +234,7 @@ $(function () {
 	};
 
 	var endTime = Math.floor((new Date()).getTime()/1000);
-	var startTime = endTime - 60*60*24;
+	var startTime = endTime - 60*60*24*14; //CWD-- last 14 days
 
 	
 	var corona = {

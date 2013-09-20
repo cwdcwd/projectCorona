@@ -73,7 +73,7 @@ app.get('/', function(request, response) {
 var port = process.env.PORT || 5000;
 var server = app.listen(port, function() {
     console.log("Listening on " + port);
-    console.log(config);
+    //console.log(config);
 });
 
 // attach socket.io and listen
