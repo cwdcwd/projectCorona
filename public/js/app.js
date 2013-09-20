@@ -234,7 +234,7 @@ $(function () {
 	};
 
 	var endTime = Math.floor((new Date()).getTime()/1000);
-	var startTime = endTime - 60*60*24*7;
+	var startTime = endTime - 60*60*24;
 
 	
 	var corona = {
