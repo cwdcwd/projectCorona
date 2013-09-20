@@ -209,7 +209,13 @@ $(function () {
 	});
 
 	var infoOpenTimeout = 0;
+	var calcStatTimeout = 0;
 	var setContent = function(marker, activity){
+		clearTimeout(infoOpenTimeout);
+		if(!marker.visible){
+			return;
+		}
+		
 		var content = '<div class="message-box">';
 		content += '<div class="time"> ' + activity.time.toLocaleString() + '</div>';
 		if(activity.userName){
@@ -228,8 +234,9 @@ $(function () {
 	};
 
 	var endTime = Math.floor((new Date()).getTime()/1000);
-	var startTime = endTime - 60*60*24;
+	var startTime = endTime - 60*60*24*7;
 
+	
 	var corona = {
 		endTime: endTime,
 		startTime: startTime,
@@ -252,42 +259,53 @@ $(function () {
 		},
 		draw: function(){
 			var
-				start = this.startTime,
-				end = this.endTime;
+				start = corona.startTime,
+				end = corona.endTime,
+				typesShow = corona.typesShow, 
+				arr = corona.activities, i,len;
 			infoWindow.close();
-			$.each(this.activities, function(){
+			for(i= -1, len=arr.length; ++i^len;){
 				var
-					timestamp = this.timestamp;
-				if(timestamp >= start && timestamp <= end && corona.typesShow[this.dataType]) {
-					this.marker.setVisible(true);
-				} else {
-					this.marker.setVisible(false);
+					item = arr[i],
+					timestamp = item.timestamp,
+					marker = item.marker,
+					isVisible = timestamp >= start && timestamp <= end && typesShow[item.dataType];
+				if(isVisible != marker.visible){
+					marker.setVisible(isVisible);
 				}
-			});
-
+			}
 		},
 		calcStat: function(){
 			var stat = {},
-				totalVisible = 0;
+				totalVisible = 0,
+				typesShow = corona.typesShow,
 				start = this.startTime,
 				end = this.endTime;
-			$.each(corona.typesShow, function(key, val){
+				
+			$.each(typesShow, function(key, val){
 				stat[key] = {};
 				$.each(statTableIndex, function(continent, index){
 					stat[key][continent] = 0;
 				});
 			});
-			$.each(corona.activities, function(){
+			
+			var arr = corona.activities, i,len;
+			for(i= -1, len=arr.length; ++i^len;){
 				var
-					timestamp = this.timestamp,
-					statSection = stat[this.dataType],
-					val = statSection[this.continent] || 0;
-				if(timestamp >= start && timestamp <= end && corona.typesShow[this.dataType]) {
-					statSection[this.continent] = val + 1;
+					item = arr[i],
+					timestamp = item.timestamp,
+					dataType = item.dataType,
+					statSection = stat[dataType],
+					continent = item.continent,
+					val = statSection[continent] || 0;
+				
+				if(timestamp >= start && timestamp <= end ) {
+					statSection[continent] = val + 1;
 					totalVisible++;
 				}
 
-			});
+			}
+			
 
 			$.each(stat, function(dataType, val){
 				var total = 0;
@@ -314,14 +332,12 @@ $(function () {
 				$totalRow.find(td).html(total);
 			});
 
-			$totalRow.closest('tr').find('td:last').html(totalVisible/*corona.activities.length*/);
+			$totalRow.closest('tr').find('td:last').html(totalVisible);
 		},
 		addItem: function(cfg){
+			
 			clearTimeout(infoOpenTimeout);
 			infoWindow.close();
-
-			//console.log('CDFActivityUpdates: ', cfg );
-
 			var activity = {
 				dataType: cfg.Data_Type__c,
 				timestamp: Math.floor((new Date(cfg.SystemModstamp)).getTime()/1000) ,
@@ -354,9 +370,7 @@ $(function () {
 				icon: new google.maps.MarkerImage(markerConfig[activity.dataType])
 			});
 			activity.continent = getEnclosingContinent( markerLatLng );
-			infoOpenTimeout = setTimeout(function(){
-				setContent(marker, activity);
-			}, 1000);
+			
 
 			google.maps.event.addListener(marker, 'click', function(e){
 				setContent(marker, activity);
@@ -364,13 +378,28 @@ $(function () {
 
 			corona.activities.push(activity);
 			this.draw();
-			this.calcStat();
+			infoOpenTimeout = setTimeout(function(){
+				setContent(marker, activity);
+			}, 1000);
+			clearTimeout(calcStatTimeout);
+			calcStatTimeout = setTimeout(function(){
+				corona.calcStat();
+			},1000);
+			
 		}
 	};
+	
+	var itemsCache = {};
 	var socket = io.connect('http://coronabaer.herokuapp.com:80');
 	socket.on('CDFActivityUpdates', function (data) {
 		var jsonData = JSON.parse(data);
-		corona.addItem(jsonData.sobject);
+		var cfg = jsonData.sobject;
+		if( itemsCache[cfg.Id]){
+			return;
+		} else{
+			itemsCache[cfg.Id] = true;
+		}
+		corona.addItem(cfg);
 	});
 
 
