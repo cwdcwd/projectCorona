@@ -98,6 +98,6 @@ var socket = io.sockets.on('connection', function (socket) {
             }();
       };
 
-      activities.fetchActivities(org,oauth,preload);
+      activities.fetchActivities(org,config.DB.RECORDLIMIT,oauth,preload);
 
 });

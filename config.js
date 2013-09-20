@@ -14,6 +14,7 @@ process.env.CDF_PASSWORD=process.env.CDF_PASSWORD;
 
 // configuration for PRELOAD
 exports.DB = {
+	RECORDLIMIT: 2000,
     MAX_EVENTS: 0,      // maximum number of past events to be sent, 0 for unlimited
                         // MAX_EVENTS should be enabled to ensure a fast database response
     MAX_TIMESPAN: 0,    // maximum passed milliseconds between now and past events to be sent, 0 for unlimited
