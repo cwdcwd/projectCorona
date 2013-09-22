@@ -27,35 +27,41 @@ var org = nforce.createConnection({
 
 // authenticate using CDF_USERNAME and CDF_PASSWORD environment variables
 var oauth;
-console.log('calling authenticate with username: ' + process.env.CDF_USERNAME + ' password: ' + process.env.CDF_PASSWORD);
-org.authenticate({username: process.env.CDF_USERNAME, password: process.env.CDF_PASSWORD}, function(err, resp){
-    if(!err) {
-        console.log('Access Token: ' + resp.access_token);
-        oauth = resp;
+console.log('calling authenticate with username: ' + process.env.CDF_USERNAME + ' password: ****');
+org.authenticate({username: process.env.CDF_USERNAME, password: process.env.CDF_PASSWORD, securityToken:process.env.CDF_API_SECURITY_TOKEN}, function(err, resp){
 
-        // subscribing to push topic
-        console.log('subscribing to push topic ' + config.PUSH_TOPIC);
-        var str = org.stream(config.PUSH_TOPIC, oauth);
+    console.log("   org.authenticate callback. err, resp...");
 
-        // connect handler
-        str.on('connect', function(){
-            console.log('connected to pushtopic');
-        });
+    if(err) return console.log(err);
 
-        // error handler
-        str.on('error', function(error) {
-            console.log('error: ' + error);
-        });
+    console.log('*** Access Token: ' + resp.access_token);
+    oauth = resp;
 
-        // emit received data to connected clients
-        str.on('data', function(data) {
-            console.log(data);
-            socket.emit(config.PUSH_TOPIC, JSON.stringify(data));
-        });
+    // subscribing to push topic
+    console.log('*** subscribing to push topic ' + config.PUSH_TOPIC);
+    var str = org.stream(config.PUSH_TOPIC, oauth);
 
-    } else {
-        console.log('Error: ' + err.message);
-    }
+    // connect handler
+    str.on('connect', function(){
+        console.log('*** connected to pushtopic');
+
+        if(socket != null) {
+            loadHistory();
+        }
+    });
+
+    // error handler
+    str.on('error', function(error) {
+        console.log('*** error: ' + error);
+    });
+
+    // emit received data to connected clients
+    str.on('data', function(data) {
+        console.log('*** on data');
+        console.log(data);
+        socket.emit(config.PUSH_TOPIC, JSON.stringify(data));
+    });
+
 });
 
 /*
@@ -85,19 +91,27 @@ io.configure(function () {
 io.set("log level", 3);
 });
 
-var socket = io.sockets.on('connection', function (socket) { 
+var socket = io.sockets.on('connection', function (socket) {
     console.log('new client connected');
-    var preload=function(events){
-        var minDelay = parseFloat(config.DB.MIN_DELAY) / events.length;
-        var maxDelta = parseFloat(config.DB.MAX_DELAY) / events.length - minDelay;
-        for(i in events)
-            var closure = function() {
-                var data = JSON.stringify(events[i]);
-                var delay = (minDelay + Math.random()*maxDelta) * (parseInt(i)+1);
-                setTimeout(function() { socket.emit(config.PUSH_TOPIC, data); }, delay);
-            }();
-      };
 
-      activities.fetchActivities(org,config.DB.RECORDLIMIT,oauth,preload);
-
+    if(oauth != null) {
+        loadHistory();
+    }
 });
+
+var preload=function(events){
+    var minDelay = parseFloat(config.DB.MIN_DELAY) / events.length;
+    var maxDelta = parseFloat(config.DB.MAX_DELAY) / events.length - minDelay;
+    for(i in events)
+        var closure = function() {
+            var data = JSON.stringify(events[i]);
+            var delay = (minDelay + Math.random()*maxDelta) * (parseInt(i)+1);
+            setTimeout(function() { socket.emit(config.PUSH_TOPIC, data); }, delay);
+        }();
+};
+
+var loadHistory = function() {
+    console.log("loadHistory(): begin");
+
+    activities.fetchActivities(org,config.DB.RECORDLIMIT,oauth,preload);
+}
