@@ -12,6 +12,9 @@ exports.API_VERSION = 'v27.0';
 process.env.CDF_USERNAME=process.env.CDF_USERNAME;
 process.env.CDF_PASSWORD=process.env.CDF_PASSWORD;
 
+//this is the (eventual) org namespace prefix
+exports.SFNS= 'cschallenge1__';
+
 // configuration for PRELOAD
 exports.DB = {
 	RECORDLIMIT: 2000,

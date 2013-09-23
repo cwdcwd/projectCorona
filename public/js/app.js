@@ -389,8 +389,21 @@ $(function () {
 		}
 	};
 	
+	//>>2879
+	urlParam = function(name){
+    	var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+	    return (results)?results[1]:'';
+	}
+	var socketUrl = 'http://coronabaer.herokuapp.com:80'
+					+'?location='+urlParam('location')
+					+'&challenge='+urlParam('challenge')
+					+'&eventType='+urlParam('eventType')
+					+'&community='+urlParam('community');
+	console.log(socketUrl);
+	//>>2879
+		
 	var itemsCache = {};
-	var socket = io.connect('http://coronabaer.herokuapp.com:80');
+	var socket = io.connect(socketUrl);
 	socket.on('CDFActivityUpdates', function (data) {
 		var jsonData = JSON.parse(data);
 		var cfg = jsonData.sobject;
