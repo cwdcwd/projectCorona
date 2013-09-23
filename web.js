@@ -87,6 +87,18 @@ io.set("log level", 3);
 
 var socket = io.sockets.on('connection', function (socket) { 
     console.log('new client connected');
+    console.log(socket.handshake.url);
+    //>>2879
+    var u = url.parse(socket.handshake.url,true);
+    var options = {filter:{}};
+    options.filter.location = u.query.location;
+    options.filter.community = u.query.community;
+    options.filter.challenge = u.query.challenge;
+    options.filter.eventType = u.query.eventType;
+    
+    console.log('Options:');
+    console.log(options);
+    //<<2879
     var preload=function(events){
         var minDelay = parseFloat(config.DB.MIN_DELAY) / events.length;
         var maxDelta = parseFloat(config.DB.MAX_DELAY) / events.length - minDelay;
@@ -98,6 +110,6 @@ var socket = io.sockets.on('connection', function (socket) {
             }();
       };
 
-      activities.fetchActivities(org,config.DB.RECORDLIMIT,oauth,preload);
+      activities.fetchActivities(org,config.DB.RECORDLIMIT,oauth,preload,options);
 
 });
