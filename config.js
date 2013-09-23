@@ -11,6 +11,7 @@ exports.API_VERSION = 'v27.0';
 
 process.env.CDF_USERNAME=process.env.CDF_USERNAME;
 process.env.CDF_PASSWORD=process.env.CDF_PASSWORD;
+process.env.CDF_API_SECURITY_TOKEN=process.env.CDF_API_SECURITY_TOKEN;
 
 // configuration for PRELOAD
 exports.DB = {
