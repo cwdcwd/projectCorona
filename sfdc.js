@@ -11,7 +11,7 @@ exports.fetchActivities=function(org,recordLimit,oauth,callback)
 	{
 	  if(!err && resp.records) 
 	  {
-	  	console.log('[SFDC]: loading previous '+resp.records+' events');
+	  	console.log('[SFDC]: loading previous '+resp.records.length+' events');
 
 	  	for(i in resp.records)
 	  	{
