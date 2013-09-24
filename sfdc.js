@@ -3,7 +3,7 @@
 
 exports.fetchActivities=function(org,recordLimit,oauth,callback)
 {
-	var q="SELECT Id, Data_Type__c, SystemModstamp, Profile_Pic__c, Country__c, Longitude__c, Latitude__c, Content__c FROM CDF_Activity__c WHERE SystemModstamp>LAST_WEEK ORDER BY SystemModstamp DESC LIMIT "+recordLimit;
+	var q="SELECT Id, Data_Type__c, SystemModstamp, Profile_Pic__c, Country__c, Longitude__c, Latitude__c, Content__c FROM CDF_Activity__c WHERE SystemModstamp>LAST_WEEK ORDER BY SystemModstamp ASC LIMIT "+recordLimit;
 	var aEvents=new Array();
 	console.log('Grabbing previous '+recordLimit+' events');
 
