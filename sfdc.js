@@ -5,13 +5,14 @@ exports.fetchActivities=function(org,recordLimit,oauth,callback)
 {
 	var q="SELECT Id, Data_Type__c, SystemModstamp, Profile_Pic__c, Country__c, Longitude__c, Latitude__c, Content__c FROM CDF_Activity__c WHERE SystemModstamp>LAST_WEEK ORDER BY SystemModstamp ASC LIMIT "+recordLimit;
 	var aEvents=new Array();
-	console.log('Grabbing previous '+recordLimit+' events');
+	console.log('[SFDC]: Grabbing previous '+recordLimit+' events');
 
 	org.query(q, oauth, function(err, resp)
 	{
 	  if(!err && resp.records) 
 	  {
-	  	
+	  	console.log('[SFDC]: loading previous '+resp.records+' events');
+
 	  	for(i in resp.records)
 	  	{
 	  		var r=resp.records[i];
@@ -31,6 +32,7 @@ exports.fetchActivities=function(org,recordLimit,oauth,callback)
 	  	}  
 	  } 
 
+	  console.log('[SFDC]: sending events to callback');
 	  callback(aEvents);
 	});
 };
