@@ -14,7 +14,7 @@ var fs = require("fs");
 var app = express();
 app.use(express.logger());
 app.use(express.static(__dirname + '/public'));
-console.log("Firing up!");
+console.log("[SERVER]: Firing up!");
 
 // create connection to salesforce
 var org = nforce.createConnection({
@@ -27,38 +27,42 @@ var org = nforce.createConnection({
 
 // authenticate using CDF_USERNAME and CDF_PASSWORD environment variables
 var oauth;
-console.log('calling authenticate with username: ' + process.env.CDF_USERNAME + ' password: ' + process.env.CDF_PASSWORD);
+console.log('[SERVER]: calling authenticate with username: ' + process.env.CDF_USERNAME + ' password: ' + process.env.CDF_PASSWORD);
 org.authenticate({username: process.env.CDF_USERNAME, password: process.env.CDF_PASSWORD}, function(err, resp){
     if(!err) {
-        console.log('Access Token: ' + resp.access_token);
+        console.log('[SFDC]: Access Token: ' + resp.access_token);
         oauth = resp;
 
         // subscribing to push topic
-        console.log('subscribing to push topic ' + config.PUSH_TOPIC);
+        console.log('[SFDC]: subscribing to push topic ' + config.PUSH_TOPIC);
         var str = org.stream(config.PUSH_TOPIC, oauth);
 
         // connect handler
         str.on('connect', function(){
-            console.log('connected to pushtopic');
+            console.log('[STREAMING]: connected to pushtopic');
         });
 
         // error handler
         str.on('error', function(error) {
-            console.log('error: ' + error);
+            console.log('[STREAMING] error: ' + error);
         });
 
         // emit received data to connected clients
         str.on('data', function(data) {
-            console.log(data);
+            if(config.PRINTDATA) 
+                console.log(data);
+            else
+                console.log('*');
+
             socket.emit(config.PUSH_TOPIC, JSON.stringify(data));
         });
 
-         str.on('disconnect', function(data) {
-            console.log('[FATAL] Disconnected from the CS org\'s streaming API topic.');
+         str.on('disconnect', function() {
+            console.log('[STREAMING][FATAL]: Disconnected from the CS org\'s streaming API topic.');
         });       
 
     } else {
-        console.log('Error: ' + err.message);
+        console.log('[STREAMING] error: ' + err.message);
     }
 });
 
@@ -76,24 +80,27 @@ app.get('/', function(request, response) {
 // run app
 var port = process.env.PORT || 5000;
 var server = app.listen(port, function() {
-    console.log("Listening on " + port);
+    console.log("[SERVER]: Listening on " + port);
     //console.log(config);
 });
 
 // attach socket.io and listen
 var io = require('socket.io').listen(server);
 // get a reference to the socket once a client connects
+
 io.configure(function () { 
   io.set("transports", ["xhr-polling"]); 
   io.set("polling duration", 5);
-io.set("log level", 3);
+  io.set("log level", 0);
 });
 
 var socket = io.sockets.on('connection', function (socket) { 
-    console.log('new client connected');
+    console.log('[SOCKET]: new client connected');
     var preload=function(events){
         var minDelay = parseFloat(config.DB.MIN_DELAY) / events.length;
         var maxDelta = parseFloat(config.DB.MAX_DELAY) / events.length - minDelay;
+
+        console.log('[SFDC]: sending preload data');
         for(i in events)
             var closure = function() {
                 var data = JSON.stringify(events[i]);
