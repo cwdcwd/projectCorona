@@ -53,6 +53,10 @@ org.authenticate({username: process.env.CDF_USERNAME, password: process.env.CDF_
             socket.emit(config.PUSH_TOPIC, JSON.stringify(data));
         });
 
+         str.on('disconnect', function(data) {
+            console.log('[FATAL] Disconnected from the CS org\'s streaming API topic.');
+        });       
+
     } else {
         console.log('Error: ' + err.message);
     }
