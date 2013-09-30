@@ -10,6 +10,7 @@ var activities=require('./sfdc.js');
 var express = require("express");
 var nforce = require('nforce');
 var fs = require("fs");
+var Url = require("url");
 
 var app = express();
 app.use(express.logger());
@@ -55,6 +56,41 @@ org.authenticate({username: process.env.CDF_USERNAME, password: process.env.CDF_
                 console.log('*');
 
             socket.emit(config.PUSH_TOPIC, JSON.stringify(data));
+
+            //console.log(socket.manager.handshaken);
+			
+			if(!data || !data.sobject) return;
+			
+            var location = data.sobject[config.SFNS+'Country__c'];
+			var community = data.sobject[config.SFNS+'Challenge__r.'+config.SFNS+'Community__r.'+config.SFNS+'Community_Id__c'];
+			var challenge = data.sobject[config.SFNS+'Challenge__r.'+config.SFNS+'Challenge_Id__c'];
+			var eventType = data.sobject[config.SFNS+'Data_Type__c'];
+			if(location) location = location.toLowerCase();
+			if(community) community = community.toLowerCase();
+			if(eventType) eventType = eventType.toLowerCase();
+			if(location) location = location.toLowerCase();
+			
+			
+            for (var name in socket.manager.handshaken) {
+				if (socket.manager.handshaken.hasOwnProperty(name)== false) continue;
+				var options = getFilterFromUrl(socket.manager.handshaken[name].url);
+				console.log('Filters');
+				console.log(options);
+				if(options && options.filter){
+						
+					if(options.filter.location && location != options.filter.location.toLowerCase())
+						continue;
+					if(options.filter.community && community != options.filter.community.toLowerCase())
+						continue;
+					if(options.filter.challenge && challenge != options.filter.challenge.toLowerCase())
+						continue;
+					if(options.filter.eventType && eventType != options.filter.eventType.toLowerCase())
+						continue;
+				}
+				//socket.emit(config.PUSH_TOPIC, JSON.stringify(data));
+				io.sockets.socket(name).emit(config.PUSH_TOPIC, JSON.stringify(data));
+			}
+            
         });
 
          str.on('disconnect', function() {
@@ -96,6 +132,13 @@ io.configure(function () {
 
 var socket = io.sockets.on('connection', function (socket) { 
     console.log('[SOCKET]: new client connected');
+    console.log(socket.handshake.url);
+    //>>2879
+    var options = getFilterFromUrl(socket.handshake.url);
+    console.log('Options:');
+    console.log(options);
+    //<<2879
+
     var preload=function(events){
         var minDelay = parseFloat(config.DB.MIN_DELAY) / events.length;
         var maxDelta = parseFloat(config.DB.MAX_DELAY) / events.length - minDelay;
@@ -109,6 +152,19 @@ var socket = io.sockets.on('connection', function (socket) {
             }();
       };
 
-      activities.fetchActivities(org,config.DB.RECORDLIMIT,oauth,preload);
+      activities.fetchActivities(org,config.DB.RECORDLIMIT,oauth,preload,options);
 
-});
+	});
+;
+
+//>>2879
+function getFilterFromUrl(urlString){
+	var u = Url.parse(urlString,true);
+	var options = {filter:{}};
+    options.filter.location = u.query.location;
+    options.filter.community = u.query.community;
+    options.filter.challenge = u.query.challenge;
+    options.filter.eventType = u.query.eventType;
+    return options;
+}
+//<<2879
