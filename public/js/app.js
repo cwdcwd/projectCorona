@@ -131,8 +131,8 @@ $(function () {
 	};
 	var transparentPixel = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 	var mapOptions = {
-		zoom: 2,
-		center: new google.maps.LatLng(39.909736,-2.53125),
+		zoom: 3,
+		center: new google.maps.LatLng(40.714623, -21.9000), 
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		//disableDefaultUI: true,
 		styles: darkTheme

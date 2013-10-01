@@ -55,8 +55,6 @@ org.authenticate({username: process.env.CDF_USERNAME, password: process.env.CDF_
             else
                 console.log('*');
 
-            socket.emit(config.PUSH_TOPIC, JSON.stringify(data));
-
             //console.log(socket.manager.handshaken);
 			
 			if(!data || !data.sobject) return;
