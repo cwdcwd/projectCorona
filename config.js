@@ -18,11 +18,11 @@ exports.SFNS= '';
 
 // configuration for PRELOAD
 exports.DB = {
-	RECORDLIMIT: 2000,
+	RECORDLIMIT: 1500,
     MAX_EVENTS: 0,      // maximum number of past events to be sent, 0 for unlimited
                         // MAX_EVENTS should be enabled to ensure a fast database response
     MAX_TIMESPAN: 0,    // maximum passed milliseconds between now and past events to be sent, 0 for unlimited
-    TIMESTAMP_GETTER: function(data) { return data.sobject.SystemModstamp }, // name of the field for the timestamp in the event record
+    TIMESTAMP_GETTER: function(data) { return data.sobject.SystemModstamp; }, // name of the field for the timestamp in the event record
     MAX_DELAY:  3000,   // maximum delay for all past events to be shown
     MIN_DELAY:   500    // minimum delay for all past events to be shown
 };
