@@ -215,9 +215,10 @@ $(function () {
 		if(!marker.visible){
 			return;
 		}
-		
+
 		var content = '<div class="message-box">';
 		content += '<div class="time"> ' + activity.time.toLocaleString() + '</div>';
+//console.log(activity);
 		if(activity.userName){
 			content += '<div class="text">' + activity.content + '</div>';
 			content += '<div class="img"><a href="'+ activity.userProfile +'" target="_blank"><img src="' + activity.profilePic + '" height="70" ></a></div>';
@@ -233,8 +234,9 @@ $(function () {
 		setTimeout(function(){infoWindow.close();},10000);
 	};
 
+	var daysBack=7;
 	var endTime = Math.floor((new Date()).getTime()/1000);
-	var startTime = endTime - 60*60*24*14; //CWD-- last 14 days
+	var startTime = endTime - 60*60*24*daysBack; //CWD-- last 14 days
 
 	
 	var corona = {
@@ -258,6 +260,7 @@ $(function () {
 			this.calcStat();
 		},
 		draw: function(){
+//console.log("drawing markers");
 			var
 				start = corona.startTime,
 				end = corona.endTime,
@@ -270,6 +273,7 @@ $(function () {
 					timestamp = item.timestamp,
 					marker = item.marker,
 					isVisible = timestamp >= start && timestamp <= end && typesShow[item.dataType];
+//console.log(item+': '+isVisible);
 				if(isVisible != marker.visible){
 					marker.setVisible(isVisible);
 				}
@@ -377,6 +381,7 @@ $(function () {
 			});
 
 			corona.activities.push(activity);
+//console.log("added activity. calling draw.");
 			this.draw();
 			infoOpenTimeout = setTimeout(function(){
 				setContent(marker, activity);
@@ -388,37 +393,71 @@ $(function () {
 			
 		}
 	};
+
+	validateField=function(data,field)	{
+		var exists=false;
+
+		if(data.hasOwnProperty(field)) {
+			exists=typeof(data[field])!="undefined";
+			//console.log(field+(exists?' has value ':' is empty '));
+		}
+		//else console.log(field+' does exist on object');
+
+		return exists;
+	};
+
+	validateData=function(data)	{
+		var aFields=['Id','Data_Type__c','SystemModstamp','Country__c','Longitude__c','Latitude__c'];
+		var isValid=true;
+
+		for(var i=0;(i<aFields.length)&&isValid;++i)
+		{
+			isValid=validateField(data,aFields[i]);
+		}
+
+		return isValid;
+	};
 	
 	//>>2879
 	urlParam = function(name){
-    	var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
-	    return (results)?results[1]:'';
+		var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		return (results)?results[1]:'';
 	}
-	var socketUrl = 'http://coronabaer.herokuapp.com:80'
+	var socketUrl = 'http://'+location.hostname
 					+'?location='+urlParam('location')
 					+'&challenge='+urlParam('challenge')
 					+'&eventType='+urlParam('eventType')
-					+'&community='+urlParam('community');
-	console.log(socketUrl);
+					+'&community='+urlParam('community'); //http://coronabaer.herokuapp.com:80
+	//console.log(socketUrl);
 	//>>2879
 		
 	var itemsCache = {};
 	var socket = io.connect(socketUrl);
+	socket.on('reconnecting', function () { console.log('[SOCKET]: client reconnect...'); });
 	socket.on('CDFActivityUpdates', function (data) {
 		var jsonData = JSON.parse(data);
 		var cfg = jsonData.sobject;
+		//console.log("data coming in: "+cfg.Id);
+		
+		if(!validateData(cfg))
+		{
+			console.log('data is missing on object');
+			return;
+		}
+
 		if( itemsCache[cfg.Id]){
 			return;
 		} else{
 			itemsCache[cfg.Id] = true;
 		}
+		//console.log("data added: "+cfg.Id);
 		corona.addItem(cfg);
 	});
 
 
 
 
-	$('.slider-label .start').text("1 day ago");
+	$('.slider-label .start').text(daysBack+" day(s) ago");
 
 	$('#time-slider').slider({
 		min: corona.startTime,
