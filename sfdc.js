@@ -12,7 +12,7 @@ exports.fetchActivities=function(org,recordLimit,oauth,callback,options)
 										+C.SFNS+"Longitude__c, "
 										+C.SFNS+"Latitude__c FROM "
 										+C.SFNS+"CDF_Activity__c "
-		+"WHERE SystemModstamp>LAST_WEEK AND Content__c!='' ORDER BY SystemModstamp ASC LIMIT "+recordLimit;
+		+"WHERE SystemModstamp>LAST_WEEK AND Content__c!='' ";
 		
 		
 		if(options && options.filter){
