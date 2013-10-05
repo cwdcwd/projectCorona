@@ -86,6 +86,7 @@ org.authenticate({username: process.env.CDF_USERNAME, password: process.env.CDF_
 						continue;
 				}
 				//socket.emit(config.PUSH_TOPIC, JSON.stringify(data));
+                console.log('.');
 				io.sockets.socket(name).emit(config.PUSH_TOPIC, JSON.stringify(data));
 			}
             
@@ -131,6 +132,7 @@ io.configure(function () {
 var socket = io.sockets.on('connection', function (socket) { 
     console.log('[SOCKET]: new client connected');
     console.log(socket.handshake.url);
+    socket.on('disconnect', function () { console.log('[SOCKET]: socket disconnected'); });
     //>>2879
     var options = getFilterFromUrl(socket.handshake.url);
     console.log('Options:');
