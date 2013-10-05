@@ -4,12 +4,15 @@ var C = require('./config.js');
 exports.fetchActivities=function(org,recordLimit,oauth,callback,options)
 {
 	//var q="SELECT Id, Data_Type__c, SystemModstamp, Profile_Pic__c, Country__c, Longitude__c, Latitude__c, Content__c FROM CDF_Activity__c WHERE SystemModstamp>LAST_WEEK ORDER BY SystemModstamp ASC LIMIT "+recordLimit;
-	var q='SELECT Id, SystemModstamp, '+C.SFNS+'Data_Type__c, '
-										+C.SFNS+'Country__c, '
-										+C.SFNS+'Longitude__c, '
-										+C.SFNS+'Latitude__c FROM '
-										+C.SFNS+'CDF_Activity__c '
-		+'WHERE SystemModstamp>LAST_WEEK ';
+	var q="SELECT Id, SystemModstamp, "
+										+C.SFNS+"Content__c, "
+										+C.SFNS+"Profile_Pic__c, "
+										+C.SFNS+"Data_Type__c, "
+										+C.SFNS+"Country__c, "
+										+C.SFNS+"Longitude__c, "
+										+C.SFNS+"Latitude__c FROM "
+										+C.SFNS+"CDF_Activity__c "
+		+"WHERE SystemModstamp>LAST_WEEK AND Content__c!='' ORDER BY SystemModstamp ASC LIMIT "+recordLimit;
 		
 		
 		if(options && options.filter){
