@@ -12,6 +12,7 @@
         "npm": "1.2.x"
     },
     "subdomain": "coronabaer",
+    "domains": [ "corona.cloudspokes.com" ],
     "scripts": {
         "start": "node web.js"
     }
