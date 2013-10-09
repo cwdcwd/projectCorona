@@ -123,13 +123,17 @@ var server = app.listen(port, function() {
 var io = require('socket.io').listen(server);
 // get a reference to the socket once a client connects
 
-io.configure(function () { 
-  io.set("transports", ["xhr-polling"]); 
-  io.set("polling duration", 5);
+io.configure(function () {
+    if(config.LONGPOLLINGON===true)
+    {
+      io.set("transports", ["xhr-polling"]);
+      io.set("polling duration", 5);
+  }
+
   io.set("log level", 0);
 });
 
-var socket = io.sockets.on('connection', function (socket) { 
+var socket = io.sockets.on('connection', function (socket) {
     console.log('[SOCKET]: new client connected');
     console.log(socket.handshake.url);
     socket.on('disconnect', function () { console.log('[SOCKET]: socket disconnected'); });
