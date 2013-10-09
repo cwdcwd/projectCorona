@@ -124,11 +124,15 @@ var io = require('socket.io').listen(server);
 // get a reference to the socket once a client connects
 
 io.configure(function () {
+
     if(config.LONGPOLLINGON===true)
     {
-      io.set("transports", ["xhr-polling"]);
-      io.set("polling duration", 5);
-  }
+        console.log("[SOCKET]: Long polling turned on.");
+        io.set("transports", ["xhr-polling"]);
+        io.set("polling duration", 5);
+    }
+    else
+        console.log("[SOCKET]: Long polling turned off.");
 
   io.set("log level", 0);
 });
