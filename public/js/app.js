@@ -1,3 +1,6 @@
+var SFNS = 'cschallenge1__';
+var SocketEndpoint = //'http://coronabaer.herokuapp.com:80'
+					'http://localhost:5000';
 $(function () {
 	var darkTheme = [
 		{
@@ -198,6 +201,7 @@ $(function () {
 
 	var map = new google.maps.Map(document.getElementById('world-map-container'), mapOptions);
 
+
 	var minZoomLevel = 2;
 	var maxZoomLevel = 5;
 	google.maps.event.addListener(map, 'zoom_changed', function() {
@@ -291,6 +295,7 @@ $(function () {
 			
 			var arr = corona.activities, i,len;
 			for(i= -1, len=arr.length; ++i^len;){
+					console.log(arr[i]);
 				var
 					item = arr[i],
 					timestamp = item.timestamp,
@@ -338,17 +343,35 @@ $(function () {
 			
 			clearTimeout(infoOpenTimeout);
 			infoWindow.close();
+			/*
 			var activity = {
-				dataType: cfg.Data_Type__c,
+				dataType: cfg[NS+'Data_Type__c'],
 				timestamp: Math.floor((new Date(cfg.SystemModstamp)).getTime()/1000) ,
 				time: new Date(cfg.SystemModstamp),
-				country: cfg.Country__c,
-				longitude: cfg.Longitude__c,
-				latitude: cfg.Latitude__c,
-				content: cfg.Content__c || '',
-				profilePic: cfg.Profile_Pic__c
+				country: cfg[NS+'Country__c'],
+				longitude: cfg[NS+'Longitude__c'],
+				latitude: cfg[NS+'Latitude__c'],
+				content: cfg[NS+'Content__c'] || '',
+				profilePic: cfg[NS+'Profile_Pic__c']
 			};
-
+			console.log(activity);
+			
+			*/
+			
+			//Date handling in Safari & IE (http://biostall.com/javascript-new-date-returning-nan-in-ie-or-invalid-date-in-safari)
+			var _dateTime = parseISO8601(cfg.SystemModstamp);
+			//console.log(cfg.SystemModstamp+ ' vs '+ _dateTime+ ' vs '+ new Date(cfg.SystemModstamp));
+			var activity = {
+				dataType: cfg[SFNS+'Data_Type__c'] || cfg.Data_Type__c,
+				timestamp: Math.floor((new Date(_dateTime/*cfg.SystemModstamp*/)).getTime()/1000) ,
+				time: new Date(_dateTime)/*new Date(cfg.SystemModstamp)*/,
+				country: cfg[SFNS+'Country__c'] || cfg.Country__c,
+				longitude: cfg[SFNS+'Longitude__c'] || cfg.Longitude__c,
+				latitude: cfg[SFNS+'Latitude__c'] || cfg.Latitude__c ,
+				content: cfg[SFNS+'Content__c'] || cfg.Content__c || '',
+				profilePic: cfg[SFNS+'Profile_Pic__c'] || cfg.Profile_Pic__c
+			};
+			
 			if(activity.profilePic){
 				var content = activity.content.split(/\s/);
 				activity.userName = content[0];
@@ -394,7 +417,7 @@ $(function () {
     	var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
 	    return (results)?results[1]:'';
 	}
-	var socketUrl = 'http://coronabaer.herokuapp.com:80'
+	var socketUrl = SocketEndpoint
 					+'?location='+urlParam('location')
 					+'&challenge='+urlParam('challenge')
 					+'&eventType='+urlParam('eventType')
@@ -416,7 +439,10 @@ $(function () {
 	});
 
 
-
+	//setTimeout(detectBrowser,100);
+	$('#stats').hide();
+	$('#times').hide();
+	detectBrowser();
 
 	$('.slider-label .start').text("1 day ago");
 
@@ -459,4 +485,67 @@ $(function () {
 		}
 	});
 
+	
 });
+
+var showTable = false;
+function toggleTable(){
+	if(showTable) $('#stats').hide('blind', { direction: 'vertical' }, 500, function(){
+		$('#_tableImg').prop('src','/img/up.png');
+	});
+	else $('#stats').show('blind', { direction: 'vertical' }, 500, function(){
+		$('#_tableImg').prop('src','/img/down.png');
+	});
+
+	showTable = !showTable;
+}
+
+var showTimeSlider = false;
+function toggleTimeSlider(){
+	if(showTimeSlider) $('#times').hide('slide', { direction: 'up' }, 300,function(){
+		$('#_timeImg').prop('src','/img/down.png');
+	});
+	else $('#times').show('slide', { direction: 'up' }, 300,function(){
+		$('#_timeImg').prop('src','/img/up.png');
+	});
+
+	showTimeSlider = !showTimeSlider;
+}
+
+
+function detectBrowser() {
+  var useragent = navigator.userAgent;
+  if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1 ) {
+	$('#stats').addClass('mobile-stats');
+	$('#stats').height((Math.min($(window).width(),$(window).height())*0.6)+'px');
+	$('#time-slider').width((Math.min($(window).width(),$(window).height())*0.5)+'px');
+  } else {
+	$('#time-slider').width(($(window).width()*0.6)+'px');
+  }
+  
+}
+
+/*
+	Safari and IE need specific date parsing
+	http://biostall.com/javascript-new-date-returning-nan-in-ie-or-invalid-date-in-safari
+*/
+function parseISO8601(str) {
+ var parts = str.split('T'),
+ dateParts = parts[0].split('-'),
+ timeParts = parts[1].split('+'),
+ timeSubParts = timeParts[0].split(':'),
+ timeSecParts = timeSubParts[2].split('.'),
+ timeHours = Number(timeSubParts[0]),
+ _date = new Date();
+
+ _date.setUTCFullYear(Number(dateParts[0]));
+ _date.setUTCMonth(Number(dateParts[1])-1);
+ _date.setUTCDate(Number(dateParts[2]));
+ _date.setUTCHours(Number(timeHours));
+ _date.setUTCMinutes(Number(timeSubParts[1]));
+ _date.setUTCSeconds(Number(timeSecParts[0]));
+ if (timeSecParts[1]) _date.setUTCMilliseconds(Number(timeSecParts[1]));
+
+ // by using setUTC methods the date has already been converted to local time(?)
+ return _date;
+}

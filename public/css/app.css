@@ -30,7 +30,7 @@ body {
     height: 70px !important;
 }
 #time-slide {
-    width: 1000px;
+    /*width: 500px;*/
     margin-left: 10px;
 }
 
@@ -41,7 +41,7 @@ body {
     right: 0;
 }
 .slider-container .slider-inner{
-    width: 1000px;
+    width: 80%;
     margin: 0 auto;
 }
 .slider-container .slider-label {
@@ -67,7 +67,7 @@ body {
     margin-top: 50px;
     border-top: 1px dashed #222;
     font-size: 16px;
-    width: 1000px;
+    /*width: 1000px;*/
     margin-left: 10px;
     padding-top: 10px;
 }
@@ -96,8 +96,12 @@ body {
     padding: 5px 10px 0;
     background: rgba(0, 0, 0, 0.8);
     color: #ffffff;
+	
 }
 
+.mobile-stats{
+	overflow: auto;
+}
 #stat-holder table td{
     font-family: Helvetica;
     padding: 1px 7px 2px;
@@ -107,5 +111,9 @@ body {
 {
     font-weight: bold;
     color: #696969;
+}
+
+.tooltip-inner{
+	color:transparent;
 }
 
